@@ -1,18 +1,19 @@
-%% Cache Crash — player activity per request
+%% Cache Crash — per-click flow
 flowchart TD
-    Start([Start round]) --> Init[Pre-fill cache with 5 random emojis<br/>score=0, time=60s]
-    Init --> Pick[Generate next request emoji<br/>biased toward cache contents early on]
-    Pick --> Wait{Player action<br/>within timeout?}
+    Start([Page load]) --> Init[Initialize empty cache<br/>capacity=4]
+    Init --> Wait{Player clicks a key?}
 
-    Wait -->|Click slot| Match{Slot emoji ==<br/>request?}
-    Match -->|Yes| Hit[Hit: score += 10<br/>cache.get reorders slot to MRU]
-    Match -->|No| WrongClick[Wrong click: score -= 5<br/>request stays]
-    Hit --> NextOrEnd
-    WrongClick --> Wait
+    Wait -->|Yes| Lookup{cache.has key?}
 
-    Wait -->|Timeout| Auto[Auto-miss: score -= 5<br/>cache.put evicts LRU<br/>request becomes new MRU]
-    Auto --> NextOrEnd
+    Lookup -->|Yes| Hit[HIT<br/>cache.get key<br/>moves node to MRU<br/>hits += 1]
+    Lookup -->|No| MissBranch{cache full?}
 
-    NextOrEnd{time > 0?}
-    NextOrEnd -->|Yes| Pick
-    NextOrEnd -->|No| End([Show final score + hit rate])
+    MissBranch -->|Yes| Evict[MISS w/ eviction<br/>cache.put key<br/>evicts current LRU<br/>misses += 1]
+    MissBranch -->|No| InsertOnly[MISS<br/>cache.put key<br/>inserts at MRU<br/>misses += 1]
+
+    Hit --> Render[Render slots MRU to LRU<br/>update hit rate]
+    Evict --> Render
+    InsertOnly --> Render
+    Render --> Wait
+
+    Wait -->|Reset clicked| Init

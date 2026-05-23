@@ -24,19 +24,15 @@ classDiagram
 
     class Game {
       -cache: LRUCache
-      -score: int
       -hits: int
       -misses: int
-      -currentRequest: string
-      -timeLeft: int
-      -running: bool
-      +start()
-      +stop()
-      -tick()
-      -nextRequest()
-      -handleSlotClick(emoji)
-      -handleTimeout()
+      -lastEvent: Event
+      +reset()
+      +request(key)
       -render()
+      -renderKeys()
+      -describeLastEvent() string
+      -flash()
     }
 
     class HitResult {

@@ -3,26 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cache Crash — LRU Game</title>
+  <title>Cache Crash — LRU Sandbox</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app">
     <h1>Cache Crash</h1>
-    <p class="subtitle">Hit the slot that matches the request. Miss → LRU evicts.</p>
+    <p class="subtitle">A live LRU cache. Click any key — watch <code>get</code> reorder, <code>put</code> evict.</p>
 
     <div class="hud">
-      <div><span class="label">Score</span><span class="value" id="score">0</span></div>
       <div><span class="label">Hits</span><span class="value" id="hits">0</span></div>
       <div><span class="label">Misses</span><span class="value" id="misses">0</span></div>
-      <div><span class="label">Time</span><span class="value" id="timer">60</span></div>
+      <div><span class="label">Hit rate</span><span class="value" id="rate">—</span></div>
     </div>
 
-    <div class="request-panel">
-      <div class="label">Request</div>
-      <div id="request-emoji">—</div>
-    </div>
+    <div class="section-label">Request a key</div>
+    <div class="keys" id="keys"></div>
 
+    <div class="section-label">Cache (capacity 4) <span class="muted">— MRU left, LRU right</span></div>
     <div class="slots" id="slots"></div>
     <div class="legend">
       <span class="mru-tag">◀ MRU (just used)</span>
@@ -30,14 +28,14 @@
     </div>
 
     <div class="controls">
-      <button id="start-btn">Start</button>
-      <span id="message"></span>
+      <button id="reset-btn">Reset</button>
+      <span id="message">Click a key to issue a request.</span>
     </div>
 
     <footer>
       Built on a doubly linked list + hash map. See
       <a href="./lru.js">lru.js</a> ·
-      <a href="./README.md">rules</a>
+      <a href="./README.md">notes</a>
     </footer>
   </div>
 

@@ -1,24 +1,23 @@
 # Week 02 (a) — Cache Crash
 
-A small web game built around an **LRU Cache** (LeetCode 146).
+A live **LRU Cache** sandbox (LeetCode 146). Click a key, watch the cache react.
 
 ## Concept
 
-The 5 cache slots are the playfield. A "request" emoji appears at the top:
+8 fixed keys (A–H). 4 cache slots. Click any key:
 
-- **Click the slot holding it** → cache hit. +10 points. The slot reorders to **MRU** (leftmost). The cache mutates exactly the way `LRUCache.get(key)` does in real systems.
-- **Wait too long** → auto-miss. The current LRU slot (rightmost, orange-bordered) is evicted, the request becomes the new MRU. −5 points.
-- **Click the wrong slot** → −5 points. Request stays.
+- **In cache** → **HIT**. `cache.get(key)` is called — the node is unlinked and reinserted at the head, becoming MRU.
+- **Not in cache** → **MISS**. `cache.put(key)` is called — if the cache is full, the LRU (tail) is evicted; the new key enters at the head.
 
-You play 60 seconds. Final score = points + hit rate %.
+Hits / misses / hit rate update each click. There is no timer and no scoring — the cache state IS the gameplay. Cached keys glow on the key row so you can plan whether the next click will hit or miss.
 
 ## Why this design
 
-The data structure is the gameplay. There's no "game logic that happens to use a cache" — every click triggers a textbook LRU operation, and the on-screen reorder visualizes the doubly-linked-list manipulation in real time. Educator/grader sees `get` (access reorders) and `put` (eviction) without any explanation.
+The data structure is the playfield. Every click is exactly one textbook LRU operation, and the slot reorder visualizes the doubly-linked-list manipulation in real time. An educator can watch `get` (access reorders) and `put` (eviction) happen with no extra plumbing.
 
 ## Run locally
 
-It's pure HTML/CSS/vanilla JS modules — no build step. Either:
+Pure HTML/CSS/vanilla JS modules — no build step. Either:
 
 ```bash
 # any static server works because of ES module imports
@@ -32,33 +31,34 @@ Or open `index.html` via VS Code Live Server. (Double-click won't work in some b
 
 | File | Purpose |
 |---|---|
-| `index.html` | Markup + HUD + slot grid |
-| `style.css` | Dark theme, MRU/LRU border highlights, hit/miss flash animations |
+| `index.html` | Markup — HUD, key row, cache slots, reset |
+| `style.css` | Dark theme, MRU/LRU border highlights, hit/miss flash on slots, `.cached` highlight on keys |
 | `lru.js` | The data structure — `Node`, `LRUCache` (Map + doubly-linked list with sentinel head/tail) |
-| `game.js` | `Game` class — round loop, timer, request generator, render |
-| `activity-diagram.mmd` | Per-request flow (Mermaid) |
+| `game.js` | `Game` class — handles a click, calls `cache.get` / `cache.put`, renders |
+| `activity-diagram.mmd` | Per-click flow (Mermaid) |
 | `class-diagram.mmd` | Class relationships (Mermaid) |
 
 ## Activity diagram
 
 ```mermaid
 flowchart TD
-    Start([Start round]) --> Init[Pre-fill cache with 5 random emojis<br/>score=0, time=60s]
-    Init --> Pick[Generate next request emoji<br/>biased toward cache contents early on]
-    Pick --> Wait{Player action<br/>within timeout?}
+    Start([Page load]) --> Init[Initialize empty cache<br/>capacity=4]
+    Init --> Wait{Player clicks a key?}
 
-    Wait -->|Click slot| Match{Slot emoji ==<br/>request?}
-    Match -->|Yes| Hit[Hit: score += 10<br/>cache.get reorders slot to MRU]
-    Match -->|No| WrongClick[Wrong click: score -= 5<br/>request stays]
-    Hit --> NextOrEnd
-    WrongClick --> Wait
+    Wait -->|Yes| Lookup{cache.has key?}
 
-    Wait -->|Timeout| Auto[Auto-miss: score -= 5<br/>cache.put evicts LRU<br/>request becomes new MRU]
-    Auto --> NextOrEnd
+    Lookup -->|Yes| Hit[HIT<br/>cache.get key<br/>moves node to MRU<br/>hits += 1]
+    Lookup -->|No| MissBranch{cache full?}
 
-    NextOrEnd{time > 0?}
-    NextOrEnd -->|Yes| Pick
-    NextOrEnd -->|No| End([Show final score + hit rate])
+    MissBranch -->|Yes| Evict[MISS w/ eviction<br/>cache.put key<br/>evicts current LRU<br/>misses += 1]
+    MissBranch -->|No| InsertOnly[MISS<br/>cache.put key<br/>inserts at MRU<br/>misses += 1]
+
+    Hit --> Render[Render slots MRU to LRU<br/>update hit rate]
+    Evict --> Render
+    InsertOnly --> Render
+    Render --> Wait
+
+    Wait -->|Reset clicked| Init
 ```
 
 ## Class diagram
@@ -89,19 +89,15 @@ classDiagram
 
     class Game {
       -cache: LRUCache
-      -score: int
       -hits: int
       -misses: int
-      -currentRequest: string
-      -timeLeft: int
-      -running: bool
-      +start()
-      +stop()
-      -tick()
-      -nextRequest()
-      -handleSlotClick(emoji)
-      -handleTimeout()
+      -lastEvent: Event
+      +reset()
+      +request(key)
       -render()
+      -renderKeys()
+      -describeLastEvent() string
+      -flash()
     }
 
     class HitResult {
@@ -117,15 +113,24 @@ classDiagram
 
 ## Mapping to LeetCode 146
 
-| LeetCode op | In this game |
+| LeetCode op | In this sandbox |
 |---|---|
-| `get(key)` | Player clicks a slot that holds the request — slot moves to MRU position |
-| `put(key, value)` | Auto-miss inserts a new key; if cache full, LRU is evicted |
+| `get(key)` | Click a cached key — slot reorders to MRU position |
+| `put(key, value)` | Click an uncached key — inserts at MRU; if full, current LRU is evicted |
 | `O(1)` for both | Achieved via Map → Node refs + doubly-linked list with sentinel head/tail |
+
+## Suggested click sequences to demo each path
+
+| Sequence | What it shows |
+|---|---|
+| `A B C D` | Four misses, fills the cache. Slots: `D C B A` (MRU → LRU). |
+| then `A` | Hit. `A` jumps to MRU: `A D C B`. |
+| then `E` | Miss with eviction. `B` (LRU) is evicted, `E` enters at MRU: `E A D C`. |
+| then `A` again | Hit. `A` to MRU: `A E D C`. |
 
 ## Tradeoffs / notes
 
 - Used a JS `Map` as the hash side rather than a plain object — preserves insertion order and avoids prototype-key collisions, plus `Map.size` is `O(1)`.
-- Sentinel head/tail (`Node(null, null)` at both ends) means `_remove` and `_addFront` never branch on null. Standard LRU implementation trick.
-- Request generator biases toward in-cache emojis early so the first ~10 seconds feel responsive instead of brutally hard. Bias decays as the round progresses.
+- Sentinel head/tail (`Node(null, null)` at both ends) means `_remove` and `_addFront` never branch on null. Standard LRU trick.
+- Removed timer/scoring/hit-bias from an earlier draft. The simulation noise was hiding the data-structure operation; turn-based makes each `get`/`put` legible.
 - No code coverage / tests yet — the homework brief said "code is optional", and I prioritized a playable demo over test scaffolding. If extending this later, the natural test target is `lru.js` (pure data-structure logic, easy to unit-test).
