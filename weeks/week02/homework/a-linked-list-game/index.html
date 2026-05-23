@@ -9,7 +9,7 @@
 <body>
   <div class="app">
     <h1>Cache Crash</h1>
-    <p class="subtitle">A live LRU cache. Click any key — watch <code>get</code> reorder, <code>put</code> evict.</p>
+    <p class="subtitle">Click a key. If it's in the cache, it jumps to the front. If not, it's added — and when the cache is full, the oldest one is dropped.</p>
 
     <div class="hud">
       <div><span class="label">Hits</span><span class="value" id="hits">0</span></div>
@@ -17,19 +17,19 @@
       <div><span class="label">Hit rate</span><span class="value" id="rate">—</span></div>
     </div>
 
-    <div class="section-label">Request a key</div>
+    <div class="section-label">Click a key</div>
     <div class="keys" id="keys"></div>
 
-    <div class="section-label">Cache (capacity 4) <span class="muted">— MRU left, LRU right</span></div>
+    <div class="section-label">Cache (holds 4) <span class="muted">— newest on the left, oldest on the right</span></div>
     <div class="slots" id="slots"></div>
     <div class="legend">
-      <span class="mru-tag">◀ MRU (just used)</span>
-      <span class="lru-tag">LRU (next to evict) ▶</span>
+      <span class="mru-tag">◀ newest (just used)</span>
+      <span class="lru-tag">oldest (dropped next) ▶</span>
     </div>
 
     <div class="controls">
       <button id="reset-btn">Reset</button>
-      <span id="message">Click a key to issue a request.</span>
+      <span id="message">Click any key to start.</span>
     </div>
 
     <footer>

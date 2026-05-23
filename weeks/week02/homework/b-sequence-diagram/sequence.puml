@@ -68,8 +68,8 @@ loop every frame (while running)
     activate Coll
     loop for (a, b) in combinations(collidables, 2)
         alt distance(a, b) < a.r + b.r
-            Coll -> Coll : pick bigger / smaller by mass
-            Coll -> List : bigger.velocity = momentum-conserved
+            Coll -> Coll : pick bigger and smaller by mass
+            Coll -> List : bigger.velocity = momentum after collision
             Coll -> List : bigger.mass += smaller.mass
             Coll -> List : bigger.radius = sqrt(r1² + r2²)
             Coll -> Coll : to_remove.add(smaller)

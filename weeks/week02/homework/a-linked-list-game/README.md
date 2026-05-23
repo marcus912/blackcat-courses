@@ -42,20 +42,20 @@ The script just `cd`s here and runs `python3 -m http.server`. Any static server 
 
 ```mermaid
 flowchart TD
-    Start([Page load]) --> Init[Initialize empty cache<br/>capacity=4]
-    Init --> Wait{Player clicks a key?}
+    Start([Page load]) --> Init[Empty cache<br/>capacity = 4]
+    Init --> Wait{Click a key}
 
-    Wait -->|Yes| Lookup{cache.has key?}
+    Wait --> Lookup{Is the key already in the cache?}
 
-    Lookup -->|Yes| Hit[HIT<br/>cache.get key<br/>moves node to MRU<br/>hits += 1]
-    Lookup -->|No| MissBranch{cache full?}
+    Lookup -->|Yes| Hit[Hit<br/>Move it to the front<br/>hits += 1]
+    Lookup -->|No| Full{Cache full?}
 
-    MissBranch -->|Yes| Evict[MISS w/ eviction<br/>cache.put key<br/>evicts current LRU<br/>misses += 1]
-    MissBranch -->|No| InsertOnly[MISS<br/>cache.put key<br/>inserts at MRU<br/>misses += 1]
+    Full -->|No| Insert[Miss<br/>Add to the front<br/>misses += 1]
+    Full -->|Yes| Evict[Miss<br/>Drop the oldest<br/>Add to the front<br/>misses += 1]
 
-    Hit --> Render[Render slots MRU to LRU<br/>update hit rate]
+    Hit --> Render[Redraw slots<br/>update hit rate]
+    Insert --> Render
     Evict --> Render
-    InsertOnly --> Render
     Render --> Wait
 
     Wait -->|Reset clicked| Init

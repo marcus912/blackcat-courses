@@ -91,10 +91,10 @@ class Game {
 
   describeLastEvent() {
     const e = this.lastEvent;
-    if (!e) return "Click a key to issue a request.";
-    if (e.kind === "hit") return `HIT  ${e.key} → moved to MRU.`;
-    if (e.evicted) return `MISS ${e.key} → inserted at MRU, evicted ${e.evicted}.`;
-    return `MISS ${e.key} → inserted at MRU.`;
+    if (!e) return "Click any key to start.";
+    if (e.kind === "hit") return `Hit: ${e.key} was already in the cache, moved to the front.`;
+    if (e.evicted) return `Miss: added ${e.key} to the front, dropped ${e.evicted} (it was the oldest).`;
+    return `Miss: added ${e.key} to the front.`;
   }
 
   flash() {
