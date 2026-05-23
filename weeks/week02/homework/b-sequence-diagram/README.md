@@ -7,6 +7,8 @@ Reverse-engineered sequence diagram for the pygame collision-simulation script.
 - [`source.py`](./source.py) — original script under analysis
 - [`sequence.mmd`](./sequence.mmd) — Mermaid (canonical, renders below on GitHub)
 - [`sequence.puml`](./sequence.puml) — PlantUML version (classic UML look, for printable submission)
+- [`sequence.uml`](./sequence.uml) — StarUML 1 (XPD) format, importable via `File → Import → StarUML 1 file (.uml)`
+- [`generate_uml.py`](./generate_uml.py) — script that generates `sequence.uml` from a Python message list (re-run after edits)
 
 ## Modeling decision
 
@@ -145,7 +147,24 @@ sequenceDiagram
 ## Rendering
 
 - **Mermaid:** GitHub renders it inline. Locally: `npx -p @mermaid-js/mermaid-cli mmdc -i sequence.mmd -o sequence.png`
-- **PlantUML:** `plantuml sequence.puml` → `sequence.png`. Or paste into the StarUML PlantUML extension.
+- **PlantUML:** `plantuml sequence.puml` → `sequence.png`.
+- **StarUML:** open StarUML → `File` → `Import` → `StarUML 1 file (.uml)` → pick `sequence.uml`. The diagram opens as a real editable Sequence Role Diagram.
+
+### Caveat for the StarUML version
+
+StarUML 1's sequence diagrams predate UML 2.0 combined fragments — there's no `loop` / `alt` / `opt` box element. The control flow from the Mermaid version is **flattened** in `sequence.uml`: iteration / branching is encoded as a `[loop ...]` / `[alt ...]` / `[opt ...]` prefix in the message label. Reading order is preserved; the visual boxes are not.
+
+If you need the boxes for submission, render Mermaid or PlantUML to PNG and submit that alongside the `.uml` for the editable model.
+
+### Regenerating `sequence.uml`
+
+The `.uml` file is built by `generate_uml.py` from a Python list of `(sender, receiver, label)` tuples. To change the diagram, edit the `MESSAGES` / `LIFELINES` list in the script and re-run:
+
+```bash
+python3 generate_uml.py > sequence.uml
+```
+
+The script uses deterministic GUIDs so re-runs produce stable diffs.
 
 ## Notes / open questions
 
