@@ -86,7 +86,7 @@ sequenceDiagram
         alt radius out of (1, 20)
             DrawCur->>DrawCur: expansion *= -1
         end
-        DrawCur->>DrawCur: radius += expansion; mass = radius
+        DrawCur->>DrawCur: radius += expansion, mass = radius
         DrawCur->>Draw: circle(window, red, pos, radius)
         deactivate DrawCur
 
