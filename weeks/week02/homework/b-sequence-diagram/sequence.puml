@@ -1,0 +1,104 @@
+@startuml CollisionSimSequence
+' Week 02 Homework (b) — PlantUML version (classic UML look)
+' Models one frame of the main loop.
+
+title Pygame collision simulation — per-frame sequence
+
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+actor User
+participant "Main Loop" as Main
+participant "Clock\n(pygame.time)" as Clock
+participant "window\n(pygame.display)" as Window
+participant "pygame.mouse" as Mouse
+participant "pygame.event" as Event
+participant "calculate_movement()" as Move
+participant "handle_collisions()" as Coll
+participant "draw_collidables()" as DrawAll
+participant "draw_current_object()" as DrawCur
+participant "pygame.draw" as Draw
+participant "collidables : list" as List
+
+note over Main : pygame.init() / display setup runs once before the loop
+
+loop every frame (while running)
+    Main -> Clock : tick(FPS)
+    Main -> Window : fill(black)
+    Main -> Mouse : get_pos()
+    Mouse --> Main : mouse_pos
+
+    Main -> Event : get()
+    Event --> Main : events[]
+
+    loop for event in events
+        alt event.type == QUIT
+            Main -> Main : running = False
+        else event.type == KEYDOWN
+            alt key == ESCAPE
+                Main -> Main : running = False
+            else key == 'a'
+                Main -> Main : draw_attractions = !draw_attractions
+            else key == 'c'
+                Main -> List : clear()
+            end
+        else event.type == MOUSEBUTTONDOWN (left)
+            User -> Main : left click
+            Main -> List : append(new_obj)
+        end
+    end
+
+    Main -> Move : calculate_movement()
+    activate Move
+    loop for o in collidables
+        Move -> List : filter others (x is not o)
+        loop for other in others
+            Move -> Move : compute direction, magnitude, strength
+            alt magnitude > 0
+                Move -> List : other.velocity -= applied_force
+                opt draw_attractions
+                    Move -> Draw : line(window, o.pos, other.pos)
+                end
+            end
+        end
+    end
+    deactivate Move
+
+    Main -> Coll : handle_collisions()
+    activate Coll
+    loop for (a, b) in combinations(collidables, 2)
+        alt distance(a, b) < a.r + b.r
+            Coll -> Coll : pick bigger / smaller by mass
+            Coll -> List : bigger.velocity = momentum-conserved
+            Coll -> List : bigger.mass += smaller.mass
+            Coll -> List : bigger.radius = sqrt(r1² + r2²)
+            Coll -> Coll : to_remove.add(smaller)
+        end
+    end
+    Coll -> List : collidables[:] = survivors
+    deactivate Coll
+
+    Main -> DrawAll : draw_collidables()
+    activate DrawAll
+    loop for obj in collidables
+        DrawAll -> List : obj.pos += obj.velocity
+        DrawAll -> Draw : circle(window, colour, pos, radius)
+    end
+    deactivate DrawAll
+
+    Main -> DrawCur : draw_current_object()
+    activate DrawCur
+    DrawCur -> DrawCur : current_obj.pos = mouse_pos
+    alt radius out of (1, 20)
+        DrawCur -> DrawCur : expansion *= -1
+    end
+    DrawCur -> DrawCur : radius += expansion ; mass = radius
+    DrawCur -> Draw : circle(window, red, pos, radius)
+    deactivate DrawCur
+
+    Main -> Window : display.update()
+end
+
+Main -> Main : pygame.quit()
+
+@enduml
