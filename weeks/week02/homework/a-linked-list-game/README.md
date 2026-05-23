@@ -17,21 +17,21 @@ The data structure is the playfield. Every click is exactly one textbook LRU ope
 
 ## Run locally
 
-Pure HTML/CSS/vanilla JS modules — no build step. Either:
+Pure HTML/CSS/vanilla JS modules — no build step. From this folder:
 
 ```bash
-# any static server works because of ES module imports
-python3 -m http.server 8000
-# then open http://localhost:8000/
+./serve.sh           # http://localhost:8000/
+./serve.sh 9000      # custom port
 ```
 
-Or open `index.html` via VS Code Live Server. (Double-click won't work in some browsers because ES modules require `http://`.)
+The script just `cd`s here and runs `python3 -m http.server`. Any static server works; VS Code Live Server is fine too. (Double-click on `index.html` won't work in most browsers because ES modules require `http://`.)
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `index.html` | Markup — HUD, key row, cache slots, reset |
+| `serve.sh` | Convenience script — `./serve.sh [port]` to launch a local static server |
 | `style.css` | Dark theme, MRU/LRU border highlights, hit/miss flash on slots, `.cached` highlight on keys |
 | `lru.js` | The data structure — `Node`, `LRUCache` (Map + doubly-linked list with sentinel head/tail) |
 | `game.js` | `Game` class — handles a click, calls `cache.get` / `cache.put`, renders |
