@@ -2,15 +2,15 @@
 
 Two parts.
 
-## (a) Linked-List mini game
+## (a) Linked-List mini game — _Cache Crash_
 
-Design a small game whose core data structure is a singly/doubly Linked List. Deliver:
+A web reaction game built on **LRU Cache (LeetCode 146)** — the cache slots ARE the playfield.
 
-- **Activity diagram** — the player's flow
-- **Class diagram** — `Game`, `LinkedList`, `Node`, etc.
-- (Optional) working code
+- **Activity diagram** — `a-linked-list-game/activity-diagram.mmd`
+- **Class diagram** — `a-linked-list-game/class-diagram.mmd`
+- **Working code** — pure HTML/CSS/vanilla JS modules, no build step (`lru.js`, `game.js`, `index.html`, `style.css`)
 
-Folder: [`a-linked-list-game/`](./a-linked-list-game/) — _TBD, not started yet._
+Folder: [`a-linked-list-game/`](./a-linked-list-game/) — see its README for rules, run instructions, and the LeetCode 146 mapping.
 
 ## (b) Sequence diagram from pygame source
 

@@ -1,0 +1,50 @@
+%% Cache Crash — class diagram
+classDiagram
+    class Node {
+      +key: string
+      +value: string
+      +prev: Node
+      +next: Node
+    }
+
+    class LRUCache {
+      -capacity: int
+      -map: Map~key, Node~
+      -head: Node
+      -tail: Node
+      +get size: int
+      +has(key) bool
+      +get(key) HitResult
+      +put(key, value) evictedKey
+      +toArray() Slot[]
+      -_remove(node)
+      -_addFront(node)
+      -_moveToFront(node)
+    }
+
+    class Game {
+      -cache: LRUCache
+      -score: int
+      -hits: int
+      -misses: int
+      -currentRequest: string
+      -timeLeft: int
+      -running: bool
+      +start()
+      +stop()
+      -tick()
+      -nextRequest()
+      -handleSlotClick(emoji)
+      -handleTimeout()
+      -render()
+    }
+
+    class HitResult {
+      +hit: bool
+      +value: string
+    }
+
+    LRUCache "1" o-- "many" Node : doubly linked list
+    LRUCache ..> HitResult : returns
+    Game "1" --> "1" LRUCache : composes
+    Game ..> HitResult : consumes

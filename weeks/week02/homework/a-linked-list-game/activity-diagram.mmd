@@ -1,0 +1,18 @@
+%% Cache Crash — player activity per request
+flowchart TD
+    Start([Start round]) --> Init[Pre-fill cache with 5 random emojis<br/>score=0, time=60s]
+    Init --> Pick[Generate next request emoji<br/>biased toward cache contents early on]
+    Pick --> Wait{Player action<br/>within timeout?}
+
+    Wait -->|Click slot| Match{Slot emoji ==<br/>request?}
+    Match -->|Yes| Hit[Hit: score += 10<br/>cache.get reorders slot to MRU]
+    Match -->|No| WrongClick[Wrong click: score -= 5<br/>request stays]
+    Hit --> NextOrEnd
+    WrongClick --> Wait
+
+    Wait -->|Timeout| Auto[Auto-miss: score -= 5<br/>cache.put evicts LRU<br/>request becomes new MRU]
+    Auto --> NextOrEnd
+
+    NextOrEnd{time > 0?}
+    NextOrEnd -->|Yes| Pick
+    NextOrEnd -->|No| End([Show final score + hit rate])

@@ -4,6 +4,10 @@
 *.swp
 .DS_Store
 
+# Claude Code
+CLAUDE.md
+.playwright-mcp/
+
 # Python
 __pycache__/
 *.pyc

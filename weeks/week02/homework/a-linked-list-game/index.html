@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache Crash — LRU Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <h1>Cache Crash</h1>
+    <p class="subtitle">Hit the slot that matches the request. Miss → LRU evicts.</p>
+
+    <div class="hud">
+      <div><span class="label">Score</span><span class="value" id="score">0</span></div>
+      <div><span class="label">Hits</span><span class="value" id="hits">0</span></div>
+      <div><span class="label">Misses</span><span class="value" id="misses">0</span></div>
+      <div><span class="label">Time</span><span class="value" id="timer">60</span></div>
+    </div>
+
+    <div class="request-panel">
+      <div class="label">Request</div>
+      <div id="request-emoji">—</div>
+    </div>
+
+    <div class="slots" id="slots"></div>
+    <div class="legend">
+      <span class="mru-tag">◀ MRU (just used)</span>
+      <span class="lru-tag">LRU (next to evict) ▶</span>
+    </div>
+
+    <div class="controls">
+      <button id="start-btn">Start</button>
+      <span id="message"></span>
+    </div>
+
+    <footer>
+      Built on a doubly linked list + hash map. See
+      <a href="./lru.js">lru.js</a> ·
+      <a href="./README.md">rules</a>
+    </footer>
+  </div>
+
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
