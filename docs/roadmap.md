@@ -8,7 +8,7 @@ Status legend: `[ ]` planned · `[~]` in progress · `[x]` done · `[-]` skipped
 |------|------------|-------|--------|
 | [week01](../weeks/week01/) | 2026-05-09 | TBD | [ ] |
 | [week02](../weeks/week02/) | 2026-05-16 | TBD | [ ] |
-| [week03](../weeks/week03/) | 2026-05-23 | TBD | [ ] |
+| [week03](../weeks/week03/) | 2026-05-23 | Python first-class functions | [~] |
 | [week04](../weeks/week04/) | 2026-05-30 | TBD | [ ] |
 | [week05](../weeks/week05/) | 2026-06-06 | TBD | [ ] |
 | [week06](../weeks/week06/) | 2026-06-13 | TBD | [ ] |

@@ -1,0 +1,16 @@
+[project]
+name = "fortune-web"
+version = "0.1.0"
+description = "黑貓算命 — a tiny deterministic fortune-teller exercising Python first-class-function syntaxes (week03 homework)"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.0,<4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0,<9.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

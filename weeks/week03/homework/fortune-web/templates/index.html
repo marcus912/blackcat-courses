@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>黑貓算命 · Fortune Teller</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <main class="card">
+    <h1>🐈‍⬛ 黑貓算命</h1>
+    <p class="subtitle">輸入姓名與生日，黑貓為你卜一卦</p>
+
+    <form method="post" action="/fortune" class="form">
+      <label>
+        姓名
+        <input type="text" name="name" value="{{ name or '' }}" placeholder="小明" required />
+      </label>
+      <label>
+        生日
+        <input type="date" name="birthday" value="{{ birthday or '' }}" required />
+      </label>
+      <button type="submit">開始算命</button>
+    </form>
+
+    {% if error %}
+      <p class="error">⚠️ {{ error }}</p>
+    {% endif %}
+
+    {% if results %}
+      <section class="results">
+        <h2>{{ name }} 的今日運勢</h2>
+        <ul>
+          {% for label, value in results %}
+            <li><span class="label">{{ label }}</span><span class="value">{{ value }}</span></li>
+          {% endfor %}
+        </ul>
+        <p class="meta">黑貓今天已為人卜卦 {{ consultations }} 次</p>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>
