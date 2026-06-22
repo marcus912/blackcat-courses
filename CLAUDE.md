@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-Personal learning portfolio for a 26-week Saturday course (2026-05-09 → 2026-10-31). It is **not** a single application — it is a folder of 26 independent weekly deliverables plus a final capstone. Each `weeks/weekNN/homework/` is self-contained and brings its own stack (its own `package.json`, `requirements.txt`, `Dockerfile`, etc.). There is no root manifest, no monorepo tooling, no shared lockfile.
+Personal learning portfolio for a 26-week Saturday course (2026-05-09 → 2026-10-31). It is **not** a single application — it is a folder of 26 independent weekly deliverables plus a final capstone. Each `weeks/weekNN/homework/` is self-contained and brings its own stack (its own `package.json`, `requirements.txt`, `Dockerfile`, etc.); never assume a week shares deps with another.
+
+There is one exception: the repo root has a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml` + `uv.lock`, Python pinned in `.python-version`) used for shared Python tooling/scratch work that isn't tied to a single week. It is **not** a monorepo workspace — weeks do not inherit from it. Manage it with `uv add <pkg>` / `uv run <cmd>`; the `.venv/` is gitignored.
 
 The curriculum is still changing — folder names use `weekNN` only, and topics live inside each week's `README.md`. Treat the topic in `docs/roadmap.md` as a placeholder until the week is actually done.
 

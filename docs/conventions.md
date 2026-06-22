@@ -14,7 +14,9 @@ weeks/weekNN/
 └── demo/         ← screenshots, demo.gif, asciinema cast
 ```
 
-`homework/` is self-contained: it owns its own `package.json`, `requirements.txt`, `Dockerfile`, etc. No shared root manifest — weeks use different stacks.
+`homework/` is self-contained: it owns its own `package.json`, `requirements.txt`, `Dockerfile`, etc. Weeks use different stacks and do not share deps.
+
+The repo root has a [uv](https://docs.astral.sh/uv/) project (`pyproject.toml` + `uv.lock`, `.python-version`) for shared Python tooling/scratch work not tied to a single week. It is not a workspace — weeks don't inherit from it. Use `uv add <pkg>` / `uv run <cmd>`.
 
 ## Week README template
 
