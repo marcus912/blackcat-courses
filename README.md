@@ -8,6 +8,7 @@ This repo documents weekly notes, homework, and demos. The W26 capstone integrat
 
 | Path | Purpose |
 |---|---|
+| `courses/` | Source course materials (handbooks / PDFs), one folder per course |
 | `weeks/weekNN/` | Per-week notes, homework, and demo (one folder per week, week01–week26) |
 | `capstone/` | Final integrated project (filled in toward W26) |
 | `docs/roadmap.md` | 26-week status table |
